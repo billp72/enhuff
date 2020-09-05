@@ -1,0 +1,13 @@
+[
+  { "text": "", "path":"/private", "component":"Private"},
+  { "text": "", "path":"/room", "component":"Room"},
+  { "text": "Home", "path":"/", "component": "Home" },
+  { "text": "Map", "path":"/map", "component":"Map" },
+  {
+    "text": "Create",
+      "items": [
+        { "text": "Room", "path": "/create", "component":"Create" }   
+      ]
+    }
+  ]
+
