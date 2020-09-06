@@ -92,7 +92,6 @@ export class MapContainer extends Component {
         >
       
             {this.state.markers.map((marker, index) => {
-              console.log(marker)
               return(
                 <Marker
                   key={index}
