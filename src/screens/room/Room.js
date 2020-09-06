@@ -15,13 +15,12 @@ class Room extends React.Component {
     
     constructor(props) {
         super(props)
-        const {name, user, room} = queryString.parse(this.props.location.search)
         const db = firebase.firestore();
         this.GeoFirestore = geofirestore.initializeApp(db);
         this.state = {
-            roomId: room,
-            name: name,
-            user: user,
+            roomId: '',
+            name: '',
+            user: '',
             users:[],
             messages: []
            
@@ -32,6 +31,12 @@ class Room extends React.Component {
     } 
     
     componentDidMount() {
+       const {name, user, room} = queryString.parse(this.props.location.search)
+       this.setState({
+            roomId: room,
+            name: name,
+            user: user
+       })
        this.socket.emit('join', {name: this.state.name, room: this.state.roomId}, (msg) => {
             this.GeoFirestore.collection('users').doc(firebase.auth().currentUser.uid).update({
                 room: this.state.roomId
