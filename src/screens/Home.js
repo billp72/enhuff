@@ -24,13 +24,12 @@ const Home = (props) => {
     db.collection('coordinates').doc(auth.currentUser.uid).set({
       name:'anonymous'
     },{merge:true})
-  },[])
+  },[GeoFirestore])
 
   const setImage = (e) => {
     const image = e.target.files[0]
     const ext = image.name.split('.')[1];
-    if(image.type.split('/')[0] === 'image' && 
-       Math.round(image.size / 1024) < 4096 &&
+    if(Math.round(image.size / 1024) < 4096 &&
        image.type.split('/')[1] === 'jpeg' ||
        image.type.split('/')[1] === 'png'){
 
