@@ -44,20 +44,28 @@ const App = (props) => {
     const GeoFirestore = geofirestore.initializeApp(db);
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
-        const isAnonymous = user.isAnonymous;
-        const uid = user.uid;
-        if (navigator && navigator.geolocation) {
-          navigator.geolocation.getCurrentPosition((pos) => {
-            const coords = pos.coords;
-            GeoFirestore.collection('users').doc(uid).set({
-              coordinates: new firebase.firestore.GeoPoint(coords.latitude, coords.longitude)
-            },{merge:true});
-            db.collection('coordinates').doc(uid).set({
-              latitude:coords.latitude,
-              longitude:coords.longitude
-            },{merge:true})
-          })
-      }
+          const isAnonymous = user.isAnonymous;
+          const uid = user.uid;
+          if (navigator && navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition((pos) => {
+              const coords = pos.coords;
+              GeoFirestore.collection('users').doc(uid).set({
+                coordinates: new firebase.firestore.GeoPoint(coords.latitude, coords.longitude)
+              },{merge:true});
+              db.collection('coordinates').doc(uid).set({
+                latitude:coords.latitude,
+                longitude:coords.longitude
+              },{merge:true})
+            })
+        }else{
+          GeoFirestore.collection('users').doc(uid).set({
+            coordinates: new firebase.firestore.GeoPoint(39.952619, -75.165217)
+          },{merge:true});
+          db.collection('coordinates').doc(uid).set({
+            latitude:39.952619,
+            longitude:-75.165217
+          },{merge:true})
+        }
         setMenu(main)
      
       } else {
