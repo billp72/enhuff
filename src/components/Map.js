@@ -95,7 +95,7 @@ export class MapContainer extends Component {
               return(
                 <Marker
                   key={index}
-                  position={{lat:marker.coordinates.ef, lng:marker.coordinates.nf}}
+                  position={{lat:marker.coordinates.w_, lng:marker.coordinates.m_}}
                   onClick={this.onMarkerClick}
                   name={marker.name}
                   img={marker.image}
