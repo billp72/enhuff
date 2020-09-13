@@ -17,13 +17,19 @@ const Home = (props) => {
   const [imageURL, setImageURL] = useState('https://i.postimg.cc/FzBmZRCv/silhouette.png');
 
   useEffect(() => {
-    GeoFirestore.collection('users').doc(auth.currentUser.uid).set({
-      name:'anonymous'
-    },{merge:true});
-
-    db.collection('coordinates').doc(auth.currentUser.uid).set({
-      name:'anonymous'
-    },{merge:true})
+    (async function(){
+        const name = await GeoFirestore.collection('users').doc(auth.currentUser.uid).get();
+      if(!name.data().name){
+        GeoFirestore.collection('users').doc(auth.currentUser.uid).set({
+          name:'anonymous'
+        },{merge:true});
+    
+        db.collection('coordinates').doc(auth.currentUser.uid).set({
+          name:'anonymous'
+        },{merge:true})
+      }
+    }())
+    
   },[GeoFirestore])
 
   const setImage = (e) => {
