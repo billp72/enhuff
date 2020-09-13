@@ -38,8 +38,8 @@ const App = (props) => {
 
   const [menu, setMenu] = useState(0);
 
+  
   useEffect(() => {
-
     const db = firebase.firestore();
     const GeoFirestore = geofirestore.initializeApp(db);
     firebase.auth().onAuthStateChanged((user) => {
@@ -48,23 +48,21 @@ const App = (props) => {
           const uid = user.uid;
           if (navigator && navigator.geolocation) {
             navigator.geolocation.getCurrentPosition((pos) => {
-              const coords = pos.coords;
-              GeoFirestore.collection('users').doc(uid).set({
-                coordinates: new firebase.firestore.GeoPoint(coords.latitude, coords.longitude)
-              },{merge:true});
-              db.collection('coordinates').doc(uid).set({
-                latitude:coords.latitude,
-                longitude:coords.longitude
-              },{merge:true})
-            })
+              if(pos.coords && pos.coords.latitude){
+                  const coords = pos.coords;
+                  GeoFirestore.collection('users').doc(uid).set({
+                    coordinates: new firebase.firestore.GeoPoint(coords.latitude, coords.longitude)
+                  },{merge:true});
+                  db.collection('coordinates').doc(uid).set({
+                    latitude:coords.latitude,
+                    longitude:coords.longitude
+                  },{merge:true})
+              }
+            }, showError)
+            
         }else{
-          GeoFirestore.collection('users').doc(uid).set({
-            coordinates: new firebase.firestore.GeoPoint(39.952619, -75.165217)
-          },{merge:true});
-          db.collection('coordinates').doc(uid).set({
-            latitude:39.952619,
-            longitude:-75.165217
-          },{merge:true})
+          alert('Your browser does not support geolocation. Try another');
+          return setMenu(login)
         }
         setMenu(main)
      
@@ -77,10 +75,33 @@ const App = (props) => {
 
   },[]);
 
+  const showError = (error) => {
+    switch(error.code) {
+      case error.PERMISSION_DENIED:
+        alert("User denied the request for Geolocation.")
+        break;
+      case error.POSITION_UNAVAILABLE:
+        alert("Location information is unavailable.")
+        break;
+      case error.TIMEOUT:
+        alert("The request to get user location timed out.")
+        break;
+      case error.UNKNOWN_ERROR:
+        alert("An unknown error occurred.")
+        break;
+    }
+    firebase.auth().currentUser.delete().then(() => {
+      console.log('logged out')
+    }).catch((error) => {
+      console.error(error)
+    }) 
+    setMenu(login)
+  }
+
   const checkIfMediumPlus = useMediaPredicate(
     '(min-width: 415px)'
    );
-
+   
    const flatten = (rts) => {
     return (rts || []).map(item =>  item.items ?  [].concat.apply([],flatten(item.items)) :  item);  
    }
