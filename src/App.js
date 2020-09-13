@@ -48,7 +48,6 @@ const App = (props) => {
           const uid = user.uid;
           if (navigator && navigator.geolocation) {
             navigator.geolocation.getCurrentPosition((pos) => {
-              if(pos.coords && pos.coords.latitude){
                   const coords = pos.coords;
                   GeoFirestore.collection('users').doc(uid).set({
                     coordinates: new firebase.firestore.GeoPoint(coords.latitude, coords.longitude)
@@ -57,7 +56,6 @@ const App = (props) => {
                     latitude:coords.latitude,
                     longitude:coords.longitude
                   },{merge:true})
-              }
             }, showError)
             
         }else{
