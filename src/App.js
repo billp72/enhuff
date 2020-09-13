@@ -60,6 +60,7 @@ const App = (props) => {
             
         }else{
           alert('Your browser does not support geolocation. Try another');
+          user.delete()
           return setMenu(login)
         }
         setMenu(main)
